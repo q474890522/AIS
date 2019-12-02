@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -27,6 +28,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ais.R;
 
@@ -43,10 +45,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private TextView textView;
     private ImageView imageView;
     private Button button;
-    private DrawerLayout drawerLayout;
     File mTmpFile;
     Uri imageUri;
     private MainPresenter mPresenter;
+    private MenuItem menuItem;
+
+
 
     private static final int PERMISSIONS_REQUEST_CODE = 1;
     private static final int CAMERA_REQUEST_CODE = 2;
@@ -57,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mContext = this;
         imageView = findViewById(R.id.imageView);
         textView = findViewById(R.id.textView);
@@ -73,8 +76,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             }
         });
     }
-
-
     @Override
     public void updateUI(String s) {
         textView.setText(s);
@@ -145,6 +146,5 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             imageView.setImageBitmap(photo);
         }
     }
-
 
 }

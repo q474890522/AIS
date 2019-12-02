@@ -1,148 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/drawer_layout">
+    android:layout_height="match_parent">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary">
+    </android.support.v7.widget.Toolbar>
+
     <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:scrollbars="vertical"
-        android:fadingEdge="vertical">
-            <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="56dp">
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".MainActivity">
+            android:layout_height="match_parent">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="56dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="0dp">
 
-            </android.support.v7.widget.Toolbar>
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scaleType="centerInside" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="*设备信息:"
+                    android:maxLines="6"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_marginStart="0dp"
-                    android:layout_marginTop="56dp"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginBottom="0dp">
-
-                    <ImageView
-                        android:id="@+id/imageView"
-                        android:layout_width="200dp"
-                        android:layout_height="200dp" />
-
-                    <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="*设备信息:"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
                     <TextView
                         android:id="@+id/text_基站名称"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="1、基站名称："
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                        android:text="基站名称："
+                        android:textSize="18dp"
+                        android:gravity="center"/>
 
                     <EditText
                         android:id="@+id/基站名称"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="" />
-
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
                     <TextView
                         android:id="@+id/text_资产名称"
-                        android:layout_width="329dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="2、资产名称："
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                        android:text="资产名称："
+                        android:textSize="18dp"
+                        android:gravity="center"/>
 
                     <EditText
                         android:id="@+id/资产名称"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="" />
+                        android:layout_height="match_parent" />
+                </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
                     <TextView
                         android:id="@+id/text_资产标签号"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="3、资产标签号："
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                        android:text="资产标签号："
+                        android:textSize="18dp"
+                        android:gravity="center"/>
 
                     <EditText
                         android:id="@+id/资产标签号"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="" />
-
-                    <TextView
-                        android:id="@+id/text_规格型号"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="4、规格型号："
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-                    <EditText
-                        android:id="@+id/规格型号"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="" />
-
-                    <TextView
-                        android:id="@+id/text_生产厂商"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="5、生产厂商："
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-                    <EditText
-                        android:id="@+id/生产厂商"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="" />
-
-                    <TextView
-                        android:id="@+id/text_数量"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="6、数量："
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-                    <EditText
-                        android:id="@+id/数量"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="" />
-
-                    <TextView
-                        android:id="@+id/text_资产状态"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="7、资产状态："
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-                    <Spinner
-                        android:id="@+id/状态"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:entries="@array/professionals"
-                        android:spinnerMode="dialog" />
-
-                    <Button
-                        android:id="@+id/TakePhoto"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="Take Photo!" />
+                        android:layout_height="match_parent" />
                 </LinearLayout>
-            </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
+                            <TextView
+                                android:id="@+id/text_规格型号"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="规格型号：" />
+
+                            <EditText
+                                android:id="@+id/规格型号"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="" />
+
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
+                            <TextView
+                                android:id="@+id/text_生产厂商"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="生产厂商："/>
+
+                            <EditText
+                                android:id="@+id/生产厂商"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
+                            <TextView
+                                android:id="@+id/text_数量"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="数量：" />
+
+                            <EditText
+                                android:id="@+id/数量"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
+                            <TextView
+                                android:id="@+id/text_资产状态"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="资产状态：" />
+
+                            <Spinner
+                                android:id="@+id/状态"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:entries="@array/professionals"
+                                android:spinnerMode="dialog"
+                                android:gravity="center"
+                                android:layout_marginTop="12dp"/>
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                </LinearLayout>
+                <Button
+                    android:id="@+id/TakePhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Take Photo!" />
+            </LinearLayout>
+        </RelativeLayout>
     </ScrollView>
-</android.support.v4.widget.DrawerLayout>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bottomnavigationview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom ="true"
+        app:itemIconTint="@drawable/selector_tab_color"
+        app:itemTextColor="@drawable/selector_tab_color"
+        app:menu="@menu/navigationnavigation"
+        app:itemBackground="@color/colorPrimary">
+    </android.support.design.widget.BottomNavigationView>
+
+</RelativeLayout>
