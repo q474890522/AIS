@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="professionals">
+        <item></item>
+        <item>在用</item>
+        <item>闲置</item>
+        <item>待废弃</item>
+    </string-array>
+</resources>
