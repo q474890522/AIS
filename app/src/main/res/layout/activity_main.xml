@@ -33,7 +33,7 @@
                     android:id="@+id/imageView"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:scaleType="centerInside" />
+                    android:scaleType="centerCrop" />
 
                 <TextView
                     android:id="@+id/textView"
@@ -194,15 +194,78 @@
         </RelativeLayout>
     </ScrollView>
 
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/bottomnavigationview"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom ="true"
-        app:itemIconTint="@drawable/selector_tab_color"
-        app:itemTextColor="@drawable/selector_tab_color"
-        app:menu="@menu/navigationnavigation"
-        app:itemBackground="@color/colorPrimary">
-    </android.support.design.widget.BottomNavigationView>
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary">
+        <LinearLayout
+            android:id="@+id/save"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:background="@drawable/select_color"
+            android:padding="5dp">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_save_white_48dp"
+                android:layout_weight="1"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="保存"
+                android:textColor="#fff"
+                android:gravity="center" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/takepic"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:background="@drawable/select_color"
+            android:padding="5dp">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_camera_alt_white_48dp"
+                android:layout_weight="1"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="拍照"
+                android:textColor="#fff"
+                android:gravity="center" />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/commit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:background="@drawable/select_color"
+            android:padding="5dp">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_add_circle_white_48dp"
+                android:layout_weight="1"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="提交"
+                android:textColor="#fff"
+                android:gravity="center" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 
 </RelativeLayout>

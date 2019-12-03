@@ -4,6 +4,7 @@ package com.example.ais;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -28,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +52,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     Uri imageUri;
     BottomNavigationView bottomNavigationView;
     private MainPresenter mPresenter;
-    private MenuItem menuItem;
+    private LinearLayout save;
+    private LinearLayout takepic;
+    private LinearLayout commit;
 
 
 
@@ -64,24 +68,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomnavigationview);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()){
-                    case R.id.tab_save:
-                        return true;
-                    case R.id.tab_takepic:
-                        takePhoto();
-                        return true;
-                    case R.id.tab_commit:
-                        return true;
-                    default:
-                        break;
-                }
-                return false;
-            }
-        });
         mContext = this;
         imageView = findViewById(R.id.imageView);
         textView = findViewById(R.id.textView);
@@ -97,7 +83,36 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 imageView.setImageBitmap(bmp);
             }
         });
+        save = (LinearLayout)findViewById(R.id.save);
+        save.setOnClickListener(onClickListener);
+        takepic = (LinearLayout)findViewById(R.id.takepic);
+        takepic.setOnClickListener(onClickListener);
+        commit = (LinearLayout)findViewById(R.id.commit);
+        commit.setOnClickListener(onClickListener);
     }
+
+
+    public View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.save:
+                    Toast.makeText(MainActivity.this, "save", Toast.LENGTH_LONG);
+                    break;
+                case R.id.takepic:
+                    takePhoto();
+                    Toast.makeText(MainActivity.this, "takepic", Toast.LENGTH_LONG);
+                    break;
+                case R.id.commit:
+                    Toast.makeText(MainActivity.this, "commit", Toast.LENGTH_LONG);
+                    break;
+                default:
+                    break;
+            }
+
+        }
+    };
+
     @Override
     public void updateUI(String s) {
         textView.setText(s);
