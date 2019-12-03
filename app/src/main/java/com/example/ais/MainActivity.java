@@ -6,6 +6,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -47,8 +48,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private Button button;
     File mTmpFile;
     Uri imageUri;
+    BottomNavigationView bottomNavigationView;
     private MainPresenter mPresenter;
     private MenuItem menuItem;
+
 
 
 
@@ -61,6 +64,24 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottomnavigationview);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.tab_save:
+                        return true;
+                    case R.id.tab_takepic:
+                        takePhoto();
+                        return true;
+                    case R.id.tab_commit:
+                        return true;
+                    default:
+                        break;
+                }
+                return false;
+            }
+        });
         mContext = this;
         imageView = findViewById(R.id.imageView);
         textView = findViewById(R.id.textView);
@@ -69,10 +90,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                takePhoto();
-                /*Resources r = mContext.getResources();
+                //takePhoto();
+                Resources r = mContext.getResources();
                 Bitmap bmp = BitmapFactory.decodeResource(r, R.drawable.test);
-                mPresenter.getRecognitionResultByImage(bmp);*/
+                mPresenter.getRecognitionResultByImage(bmp);
+                imageView.setImageBitmap(bmp);
             }
         });
     }

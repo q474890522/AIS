@@ -189,7 +189,7 @@
                     android:id="@+id/TakePhoto"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Take Photo!" />
+                    android:text="Test Photo!" />
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>
