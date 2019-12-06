@@ -55,6 +55,7 @@ public class auth {
             System.err.println("result:" + result);
             JSONObject jsonObject = new JSONObject(result);
             String access_token = jsonObject.getString("access_token");
+            connection.disconnect();
             return access_token;
         } catch (Exception e) {
             System.err.printf("get token fail!");

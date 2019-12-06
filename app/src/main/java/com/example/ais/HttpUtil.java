@@ -1,5 +1,7 @@
 package com.example.ais;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -44,15 +46,20 @@ public class HttpUtil {
         connection.setUseCaches(false);
         connection.setDoOutput(true);
         connection.setDoInput(true);
+        connection.setConnectTimeout(20*1000);
+        connection.setReadTimeout(20*1000);
+        Log.d("bmp8", String.valueOf(connection.getResponseCode()));
 
         // 得到请求的输出流对象
         DataOutputStream out = new DataOutputStream(connection.getOutputStream());
+        Log.d("bmp9", "Connection");
         out.write(params.getBytes(encoding));
         out.flush();
         out.close();
 
         // 建立实际的连�?
         connection.connect();
+        Log.d("bmp10", "Connection");
         // 获取�?有响应头字段
         Map<String, List<String>> headers = connection.getHeaderFields();
         // 遍历�?有的响应头字�?
@@ -69,7 +76,9 @@ public class HttpUtil {
             result += getLine;
         }
         in.close();
-        System.err.println("result:" + result);
+        connection.disconnect();
+        Log.d("result:",result);
+        //System.err.println("result:" + result);
         return result;
     }
 }

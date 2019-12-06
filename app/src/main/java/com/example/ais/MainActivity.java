@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 //Bitmap bmp=BitmapFactory.decodeFile(path);
                 //BaiduiOCR.getResult(path);
                 //mPresenter.getRecognitionResultByImage(bmp);
-                //imageView.setImageBitmap(bmp);
+                imageView.setImageBitmap(bmp);
             }
         });
         save = (LinearLayout)findViewById(R.id.save);
@@ -204,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         if (requestCode == CAMERA_REQUEST_CODE) {
             Bitmap photo = BitmapFactory.decodeFile(mTmpFile.getAbsolutePath());
             //mPresenter.getRecognitionResultByImage(photo);
+            textView.setText(getResult(getBitmapByte(photo)));
             imageView.setImageBitmap(photo);
         }
     }
@@ -240,8 +241,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             Log.d("bmp3",imgData.toString());
 
             Log.d("bmp4",imgStr);
-
-            String accessToken = getAuth();
+            String accessToken = "24.3105edae4eaaa45689cf6c324f71ca97.2592000.1578185520.282335-17884651";
+            //String accessToken = getAuth();
             Log.d("bmp5", accessToken);
 
 
