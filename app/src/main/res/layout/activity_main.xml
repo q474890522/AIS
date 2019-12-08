@@ -190,6 +190,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Test Photo!" />
+                <Button
+                    android:id="@+id/Save_excel"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="save_excel!" />
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>
