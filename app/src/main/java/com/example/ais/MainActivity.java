@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private LinearLayout save;
     private LinearLayout takepic;
     private LinearLayout commit;
-
+    private MainPresenter mainPresenter;//
 
 
 
@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mContext = this;
+        mainPresenter = new MainPresenter(this);//
         imageView = findViewById(R.id.imageView);
         textView = findViewById(R.id.textView);
         button = findViewById(R.id.TakePhoto);
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 Log.d("bmp1", bmp.toString());
                 Log.d("bmp2", getBitmapByte(bmp).toString());
                 //textView.setText(getBitmapByte(bmp).toString());
+                mainPresenter.getIOCRRecognitionResultByImage(bmp);
                 textView.setText(getResult(getBitmapByte(bmp)));
                 //getResult(getBitmapByte(bmp));
                 //String rawPath = "android.resource://" + getPackageName() + "/" + R.raw.test;
@@ -140,9 +142,18 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         }
     };
 
+    /**
+     * 更新UI函数，在MainPresenter的getRecognitionResultByImage()回调成功时调用
+     * @param map
+     */
     @Override
-    public void updateUI(String s) {
-        textView.setText(s);
+    public void updateUI(Map<String, Object> map) {
+        TextView textView1 = findViewById(R.id.资产名称);
+        textView1.setText(String.valueOf(map.get("资产名称")));
+        TextView textView2 = findViewById(R.id.规格型号);
+        textView2.setText(String.valueOf(map.get("规格型号")));
+        TextView textView3 = findViewById(R.id.资产标签号);
+        textView3.setText(String.valueOf(map.get("条码")));//需要换模板后更改
     }
 
     private boolean hasPermission() {
