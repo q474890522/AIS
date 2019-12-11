@@ -224,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                     break;
             }
 
+
         }
     };
 
