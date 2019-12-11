@@ -103,8 +103,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     EditText 生产厂商;
     @InjectView(R.id.数量)
     EditText 数量;
-    @InjectView(R.id.状态)
-    Spinner 状态;
+
 
 
 
@@ -136,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int pos, long id) {
-
                 String[] languages = getResources().getStringArray(R.array.professionals);
                 //Toast.makeText(MainActivity.this, "你点击的是:"+languages[pos], Toast.LENGTH_LONG).show();
                 zhuangtai = languages[pos];
@@ -207,6 +205,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                         saveToExcel.writeToExcel(base_station_name,Assets_name,Assets_numb,Assets_type,Manufacturer,numbs,state);
                         //Assets资产 base_station基站
                     }
+                    资产名称.setText("");
+                    资产标签号.setText("");
+                    规格型号.setText("");
+                    生产厂商.setText("");
+                    基站名称.setText("");
+                    数量.setText("");
                     Toast.makeText(MainActivity.this, "save", Toast.LENGTH_LONG);
                     break;
                 case R.id.takepic:
