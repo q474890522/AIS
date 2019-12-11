@@ -1,16 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.2"
     defaultConfig {
         applicationId "com.example.ais"
         minSdkVersion 15
-        targetSdkVersion 29
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
     }
     buildTypes {
         release {
@@ -38,8 +37,5 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.android.support:appcompat-v7:26.1.0'
-    compile files('libs\\jxl.jar')
-    compile 'com.jakewharton:butterknife:6.1.0'
-    implementation fileTree(dir: 'src\\lib', include: ['*.aar', '*.jar'], exclude: [])
-
+    implementation fileTree(dir: 'src\\lib', include: ['implementation*.aar', '*.jar'], exclude: [])
 }

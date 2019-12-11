@@ -56,27 +56,6 @@ import com.example.ais.BaiduiOCR;
 import com.example.ais.Base64Util;
 
 import org.json.JSONObject;
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import com.example.ais.SaveToExcel;
-
-//import java.io.File;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-
-import static com.example.ais.GetDir.getExcelDir;
 
 
 public class MainActivity extends AppCompatActivity implements MainContract.View{
@@ -86,52 +65,26 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private TextView textView;
     private ImageView imageView;
     private Button button;
-    private Button button1;
-    @InjectView(R.id.基站名称)
-    EditText 基站名称;
-    @InjectView(R.id.资产名称)
-    EditText 资产名称;
-    @InjectView(R.id.资产标签号)
-    EditText 资产标签号;
-    @InjectView(R.id.规格型号)
-    EditText 规格型号;
-    @InjectView(R.id.生产厂商)
-    EditText 生产厂商;
-    @InjectView(R.id.数量)
-    EditText 数量;
-
     File mTmpFile;
     Uri imageUri;
     private LinearLayout save;
     private LinearLayout takepic;
     private LinearLayout commit;
-    private String excelPath;
-    private SaveToExcel saveToExcel;
-    private String Assets_name;
-    private String Assets_numb;
-    private String base_station_name;
-    private String Assets_type;
-    private String Manufacturer;
-    private String numbs;
-
-
-
+    private MainPresenter mainPresenter;//
 
 
 
     private static final int PERMISSIONS_REQUEST_CODE = 1;
     private static final int CAMERA_REQUEST_CODE = 2;
-    private static final int MY_PERMISSIONS_REQUEST = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ButterKnife.inject(this);
-        excelPath = getExcelDir()+ File.separator+"demo.xls";
-        saveToExcel = new SaveToExcel(this,excelPath);
         mContext = this;
+        mainPresenter = new MainPresenter(this);//
         imageView = findViewById(R.id.imageView);
         textView = findViewById(R.id.textView);
         button = findViewById(R.id.TakePhoto);
@@ -143,10 +96,22 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 Bitmap bmp = BitmapFactory.decodeResource(r, R.drawable.test);
                 Log.d("bmp1", bmp.toString());
                 Log.d("bmp2", getBitmapByte(bmp).toString());
+                //textView.setText(getBitmapByte(bmp).toString());
+                mainPresenter.getIOCRRecognitionResultByImage(bmp);
                 textView.setText(getResult(getBitmapByte(bmp)));
+                //getResult(getBitmapByte(bmp));
+                //String rawPath = "android.resource://" + getPackageName() + "/" + R.raw.test;
+                //Uri uri=Uri.parse(rawPath);
+                //imageView.setImageURI(uri);
+                //String path =  uritopath.getFilePathByUri(getApplicationContext(),uri);
+                //textView.setText(uri.toString() + "1" + uritopath.getFilePathByUri(getApplicationContext(),uri));
+                //String path = "file:///android_asset/test.jpg";
+                //Bitmap bmp=BitmapFactory.decodeFile(path);
+                //BaiduiOCR.getResult(path);
+                //mPresenter.getRecognitionResultByImage(bmp);
+                imageView.setImageBitmap(bmp);
             }
         });
-
         save = (LinearLayout)findViewById(R.id.save);
         save.setOnClickListener(onClickListener);
         takepic = (LinearLayout)findViewById(R.id.takepic);
@@ -155,27 +120,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         commit.setOnClickListener(onClickListener);
     }
 
+
     public View.OnClickListener onClickListener = new View.OnClickListener() {
-        @OnClick
+        @Override
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.save:
-                    Assets_name =资产名称.getText().toString().trim();
-                    Assets_numb =资产标签号.getText().toString().trim();
-                    Assets_type =规格型号.getText().toString().trim();
-                    Manufacturer =生产厂商.getText().toString().trim();
-                    base_station_name =基站名称.getText().toString().trim();
-                    numbs =数量.getText().toString().trim();
-                    if (ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(MainActivity.this,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},
-                                MY_PERMISSIONS_REQUEST);
-                    } else {
-
-                        saveToExcel.writeToExcel(base_station_name,Assets_name,Assets_numb,Assets_type,Manufacturer,numbs);
-                        //Assets资产 base_station基站
-                    }
+                    Toast.makeText(MainActivity.this, "save", Toast.LENGTH_LONG);
                     break;
                 case R.id.takepic:
                     takePhoto();
@@ -191,9 +142,18 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         }
     };
 
+    /**
+     * 更新UI函数，在MainPresenter的getRecognitionResultByImage()回调成功时调用
+     * @param map
+     */
     @Override
-    public void updateUI(String s) {
-        textView.setText(s);
+    public void updateUI(Map<String, Object> map) {
+        TextView textView1 = findViewById(R.id.资产名称);
+        textView1.setText(String.valueOf(map.get("资产名称")));
+        TextView textView2 = findViewById(R.id.规格型号);
+        textView2.setText(String.valueOf(map.get("规格型号")));
+        TextView textView3 = findViewById(R.id.资产标签号);
+        textView3.setText(String.valueOf(map.get("条码")));//需要换模板后更改
     }
 
     private boolean hasPermission() {
@@ -217,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/img/";
         File file = new File(path);
         if (!file.exists()) {
-            new File(path).mkdirs();
+                new File(path).mkdirs();
         }
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
         String filename = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -248,16 +208,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 takePhoto();
             }
         }
-        if (requestCode == MY_PERMISSIONS_REQUEST) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                saveToExcel.writeToExcel(base_station_name,Assets_name,Assets_numb,Assets_type,Manufacturer,numbs);
-            } else {
-                // Permission Denied
-                Toast.makeText(MainActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
-            }
-            return;
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
@@ -265,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         if (requestCode == CAMERA_REQUEST_CODE) {
             Bitmap photo = BitmapFactory.decodeFile(mTmpFile.getAbsolutePath());
             //mPresenter.getRecognitionResultByImage(photo);
+            textView.setText(getResult(getBitmapByte(photo)));
             imageView.setImageBitmap(photo);
         }
     }
@@ -277,7 +228,15 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     public String getResult(byte[] imgData) {
-
+        /**
+         * ��Ҫ��ʾ���������蹤����
+         * FileUtil,Base64Util,HttpUtil,GsonUtils���
+         * https://ai.baidu.com/file/658A35ABAB2D404FBF903F64D47C1F72
+         * https://ai.baidu.com/file/C8D81F3301E24D2892968F09AE1AD6E2
+         * https://ai.baidu.com/file/544D677F5D4E4F17B4122FBD60DB82B3
+         * https://ai.baidu.com/file/470B3ACCA3FE43788B5A963BF0B625F3
+         * ����
+         */
 
         String recogniseUrl = "https://aip.baidubce.com/rest/2.0/solution/v1/iocr/recognise";
         String result1 = null;
@@ -286,13 +245,15 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         try {
             //byte[] imgData = FileUtil.readFileByBytes(filePath);
             String imgStr = Base64Util.encode(imgData);
+            // ����ģ�����
             String recogniseParams = "templateSign=7d59619c3d1e98c44f61a98bd81994a7&image=" + URLEncoder.encode(imgStr, "UTF-8");
+            // �������������
             //String classifierParams = "classifierId=your_classfier_id&image=" + URLEncoder.encode(imgStr, "UTF-8");
             Log.d("bmp3",imgData.toString());
 
             Log.d("bmp4",imgStr);
-
-            String accessToken = getAuth();
+            String accessToken = "24.3105edae4eaaa45689cf6c324f71ca97.2592000.1578185520.282335-17884651";
+            //String accessToken = getAuth();
             Log.d("bmp5", accessToken);
 
 
