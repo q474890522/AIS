@@ -46,6 +46,7 @@ public class SaveToExcel {
                 Label lbl4 = new Label(3, 0, "规格型号");
                 Label lbl5 = new Label(4, 0, "生产厂家");
                 Label lbl6 = new Label(5, 0, "数量");
+                Label lbl7 = new Label(6, 0, "状态");
 
                 ws.addCell(lbl1);
                 ws.addCell(lbl2);
@@ -53,6 +54,7 @@ public class SaveToExcel {
                 ws.addCell(lbl4);
                 ws.addCell(lbl5);
                 ws.addCell(lbl6);
+                ws.addCell(lbl7);
 
                 // 从内存中写入文件中
                 wwb.write();
@@ -78,12 +80,14 @@ public class SaveToExcel {
             Label lab4 = new Label(3, row, args[3] + "");
             Label lab5 = new Label(4, row, args[4] + "");
             Label lab6 = new Label(5, row, args[5] + "");
+            Label lab7 = new Label(6, row, args[6] + "");
             ws.addCell(lab1);
             ws.addCell(lab2);
             ws.addCell(lab3);
             ws.addCell(lab4);
             ws.addCell(lab5);
             ws.addCell(lab6);
+            ws.addCell(lab7);
 
 
             // 从内存中写入文件中,只能刷一次.

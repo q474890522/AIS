@@ -30,9 +30,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +60,13 @@ import com.example.ais.BaiduiOCR;
 import com.example.ais.Base64Util;
 
 import org.json.JSONObject;
+import com.example.ais.SaveToExcel;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+
+import static com.example.ais.GetDir.getExcelDir;
 
 
 public class MainActivity extends AppCompatActivity implements MainContract.View{
@@ -71,11 +82,36 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private LinearLayout takepic;
     private LinearLayout commit;
     private MainPresenter mainPresenter;//
+    private String excelPath;
+    private SaveToExcel saveToExcel;
+    private String Assets_name;
+    private String Assets_numb;
+    private String base_station_name;
+    private String Assets_type;
+    private String Manufacturer;
+    private String numbs;
+    private String state;
+    @InjectView(R.id.基站名称)
+    EditText 基站名称;
+    @InjectView(R.id.资产名称)
+    EditText 资产名称;
+    @InjectView(R.id.资产标签号)
+    EditText 资产标签号;
+    @InjectView(R.id.规格型号)
+    EditText 规格型号;
+    @InjectView(R.id.生产厂商)
+    EditText 生产厂商;
+    @InjectView(R.id.数量)
+    EditText 数量;
+    @InjectView(R.id.状态)
+    Spinner 状态;
 
 
 
     private static final int PERMISSIONS_REQUEST_CODE = 1;
     private static final int CAMERA_REQUEST_CODE = 2;
+    private static final int MY_PERMISSIONS_REQUEST = 1;
+    private String zhuangtai = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +119,33 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ButterKnife.inject(this);
+        excelPath = getExcelDir()+ File.separator+"demo.xls";
+        saveToExcel = new SaveToExcel(this,excelPath);
         mContext = this;
+        // 初始化控件
+        Spinner spinner = (Spinner) findViewById(R.id.状态);
+        // 建立数据源
+        String[] mItems = getResources().getStringArray(R.array.professionals);
+        // 建立Adapter并且绑定数据源
+        ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, mItems);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //绑定 Adapter到控件
+        spinner .setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int pos, long id) {
+
+                String[] languages = getResources().getStringArray(R.array.professionals);
+                //Toast.makeText(MainActivity.this, "你点击的是:"+languages[pos], Toast.LENGTH_LONG).show();
+                zhuangtai = languages[pos];
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Another interface callback
+            }
+        });
         mainPresenter = new MainPresenter(this);//
         imageView = findViewById(R.id.imageView);
         textView = findViewById(R.id.textView);
@@ -118,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         takepic.setOnClickListener(onClickListener);
         commit = (LinearLayout)findViewById(R.id.commit);
         commit.setOnClickListener(onClickListener);
+
     }
 
 
@@ -126,6 +189,24 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.save:
+                    Log.d("zt",zhuangtai);
+                    Assets_name =资产名称.getText().toString().trim();
+                    Assets_numb =资产标签号.getText().toString().trim();
+                    Assets_type =规格型号.getText().toString().trim();
+                    Manufacturer =生产厂商.getText().toString().trim();
+                    base_station_name =基站名称.getText().toString().trim();
+                    numbs =数量.getText().toString().trim();
+                    state =zhuangtai.trim();
+                    if (ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(MainActivity.this,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},
+                                MY_PERMISSIONS_REQUEST);
+                    } else {
+
+                        saveToExcel.writeToExcel(base_station_name,Assets_name,Assets_numb,Assets_type,Manufacturer,numbs,state);
+                        //Assets资产 base_station基站
+                    }
                     Toast.makeText(MainActivity.this, "save", Toast.LENGTH_LONG);
                     break;
                 case R.id.takepic:
@@ -154,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         textView2.setText(String.valueOf(map.get("规格型号")));
         TextView textView3 = findViewById(R.id.资产标签号);
         textView3.setText(String.valueOf(map.get("条码")));//需要换模板后更改
+        textView.setText("识别结果：" + String.valueOf(map));
     }
 
     private boolean hasPermission() {
@@ -214,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST_CODE) {
             Bitmap photo = BitmapFactory.decodeFile(mTmpFile.getAbsolutePath());
-            //mPresenter.getRecognitionResultByImage(photo);
+            mainPresenter.getIOCRRecognitionResultByImage(photo);
             textView.setText(getResult(getBitmapByte(photo)));
             imageView.setImageBitmap(photo);
         }
