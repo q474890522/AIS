@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         mainPresenter = new MainPresenter(this);//
         imageView = findViewById(R.id.imageView);
         textView = findViewById(R.id.textView);
-        button = findViewById(R.id.TakePhoto);
+        /*button = findViewById(R.id.TakePhoto);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 //mPresenter.getRecognitionResultByImage(bmp);
                 imageView.setImageBitmap(bmp);
             }
-        });
+        });*/
         save = (LinearLayout)findViewById(R.id.save);
         save.setOnClickListener(onClickListener);
         takepic = (LinearLayout)findViewById(R.id.takepic);
