@@ -147,31 +147,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         mainPresenter = new MainPresenter(this);//
         imageView = findViewById(R.id.imageView);
         textView = findViewById(R.id.textView);
-        /*button = findViewById(R.id.TakePhoto);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //takePhoto();
-                Resources r = mContext.getResources();
-                Bitmap bmp = BitmapFactory.decodeResource(r, R.drawable.test);
-                Log.d("bmp1", bmp.toString());
-                Log.d("bmp2", getBitmapByte(bmp).toString());
-                //textView.setText(getBitmapByte(bmp).toString());
-                mainPresenter.getIOCRRecognitionResultByImage(bmp);
-                textView.setText(getResult(getBitmapByte(bmp)));
-                //getResult(getBitmapByte(bmp));
-                //String rawPath = "android.resource://" + getPackageName() + "/" + R.raw.test;
-                //Uri uri=Uri.parse(rawPath);
-                //imageView.setImageURI(uri);
-                //String path =  uritopath.getFilePathByUri(getApplicationContext(),uri);
-                //textView.setText(uri.toString() + "1" + uritopath.getFilePathByUri(getApplicationContext(),uri));
-                //String path = "file:///android_asset/test.jpg";
-                //Bitmap bmp=BitmapFactory.decodeFile(path);
-                //BaiduiOCR.getResult(path);
-                //mPresenter.getRecognitionResultByImage(bmp);
-                imageView.setImageBitmap(bmp);
-            }
-        });*/
         save = (LinearLayout)findViewById(R.id.save);
         save.setOnClickListener(onClickListener);
         takepic = (LinearLayout)findViewById(R.id.takepic);
@@ -239,8 +214,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         TextView textView2 = findViewById(R.id.规格型号);
         textView2.setText(String.valueOf(map.get("规格型号")));
         TextView textView3 = findViewById(R.id.资产标签号);
-        textView3.setText(String.valueOf(map.get("条码")));//需要换模板后更改
+        textView3.setText(String.valueOf(map.get("资产标签号")));//需要换模板后更改
         textView.setText("识别结果：" + String.valueOf(map));
+    }
+
+    @Override
+    public Context getActivity() {
+        return MainActivity.this;
     }
 
     private boolean hasPermission() {
@@ -301,8 +281,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST_CODE) {
             Bitmap photo = BitmapFactory.decodeFile(mTmpFile.getAbsolutePath());
-            mainPresenter.getIOCRRecognitionResultByImage(photo);
-            textView.setText(getResult(getBitmapByte(photo)));
+            System.out.println("PhotoByteCount = " + photo.getByteCount());
+            try {
+                mainPresenter.getIOCRRecognitionResultByImage(photo);//识别拍照照片
+            } catch (Exception e) {
+                Toast.makeText(MainActivity.this, "图片识别异常:"+e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+            //textView.setText(getResult(getBitmapByte(photo)));
             imageView.setImageBitmap(photo);
         }
     }
@@ -313,107 +298,5 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
         return out.toByteArray();
     }
-
-    public String getResult(byte[] imgData) {
-        /**
-         * ��Ҫ��ʾ���������蹤����
-         * FileUtil,Base64Util,HttpUtil,GsonUtils���
-         * https://ai.baidu.com/file/658A35ABAB2D404FBF903F64D47C1F72
-         * https://ai.baidu.com/file/C8D81F3301E24D2892968F09AE1AD6E2
-         * https://ai.baidu.com/file/544D677F5D4E4F17B4122FBD60DB82B3
-         * https://ai.baidu.com/file/470B3ACCA3FE43788B5A963BF0B625F3
-         * ����
-         */
-
-        String recogniseUrl = "https://aip.baidubce.com/rest/2.0/solution/v1/iocr/recognise";
-        String result1 = null;
-
-        //String filePath = "D:\\Workspace\\Javawork\\baiduocr\\res\\test.jpg";
-        try {
-            //byte[] imgData = FileUtil.readFileByBytes(filePath);
-            String imgStr = Base64Util.encode(imgData);
-            // ����ģ�����
-            String recogniseParams = "templateSign=7d59619c3d1e98c44f61a98bd81994a7&image=" + URLEncoder.encode(imgStr, "UTF-8");
-            // �������������
-            //String classifierParams = "classifierId=your_classfier_id&image=" + URLEncoder.encode(imgStr, "UTF-8");
-            Log.d("bmp3",imgData.toString());
-
-            Log.d("bmp4",imgStr);
-            String accessToken = "24.3105edae4eaaa45689cf6c324f71ca97.2592000.1578185520.282335-17884651";
-            //String accessToken = getAuth();
-            Log.d("bmp5", accessToken);
-
-
-
-            String result = HttpUtil.post(recogniseUrl, accessToken, recogniseParams);
-            result1 = result;
-            Log.d("bmp6", imgStr);
-
-            // String result = HttpUtil.post(recogniseUrl, accessToken, classifierParams);
-            //System.out.println(result);
-            //getJson.Json(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        return result1;
-    }
-
-    public static String getAuth() {
-
-        String clientId = "G7AqxHlhGNrb3t8tZwzU1MVf";
-
-        String clientSecret = "pFuCgB4HscigzVBs7lFOGqhZFBTGB5xa";
-
-        return getAuth(clientId, clientSecret);
-    }
-
-
-    public static String getAuth(String ak, String sk) {
-
-        String authHost = "https://aip.baidubce.com/oauth/2.0/token?";
-        String getAccessTokenUrl = authHost
-
-                + "grant_type=client_credentials"
-
-                + "&client_id=" + ak
-
-                + "&client_secret=" + sk;
-        Log.d("bmp7",getAccessTokenUrl);
-        try {
-            URL realUrl = new URL(getAccessTokenUrl);
-
-            HttpURLConnection connection = (HttpURLConnection) realUrl.openConnection();
-            connection.setRequestMethod("GET");
-            connection.connect();
-
-            Map<String, List<String>> map = connection.getHeaderFields();
-
-            for (String key : map.keySet()) {
-                System.err.println(key + "--->" + map.get(key));
-            }
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String result = "";
-            String line;
-            while ((line = in.readLine()) != null) {
-                result += line;
-            }
-
-            System.err.println("result:" + result);
-            JSONObject jsonObject = new JSONObject(result);
-            String access_token = jsonObject.getString("access_token");
-
-            return access_token;
-        } catch (Exception e) {
-            //System.err.printf("get token fail!");
-            Log.d("bmp9","get token fail!");
-            e.printStackTrace(System.err);
-        }
-        return null;
-    }
-
-
 
 }

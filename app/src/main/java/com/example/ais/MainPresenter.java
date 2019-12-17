@@ -1,8 +1,12 @@
 package com.example.ais;
 
+import android.app.Application;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
@@ -40,8 +44,12 @@ public class MainPresenter implements MainContract.Presenter{
      */
     @Override
     public void getIOCRRecognitionResultByImage(Bitmap bitmap) {
+        Bitmap bitmapAfterCompress = ImageCompressL(bitmap); //压缩bitmap
+        System.out.println(bitmapAfterCompress.getByteCount());
+        //System.out.println(bitmap.getByteCount());
         //base64编码
-        String encodeResult = bitmapToString(bitmap);
+        //String encodeResult = bitmapToString(bitmap);
+        String encodeResult = bitmapToString(bitmapAfterCompress); //压缩后base64编码
         //调用retrofit网络接口，注册JavaRX
         baiduOCRService.getIOCRRecognitionResultByImage(IOCRUtils.ACCESS_TOKEN, encodeResult,IOCRUtils.templateSign)
                 .subscribeOn(Schedulers.io())
@@ -55,16 +63,24 @@ public class MainPresenter implements MainContract.Presenter{
                     @Override
                     public void onNext(IOCRRecognitionBean iocrRecognitionBean) {
                         Log.i("onNext", "getRecognitionResultByImage()回调成功");
+                        Map<String, Object> resultMap = new HashMap<>();//存储结果
+                        try {
                         Log.v("iOCR返回结果", iocrRecognitionBean.toString());
-                        Map<String, Object> resultMap = new HashMap<>();
-                        for(IOCRRecognitionBean.DataBean.RetBean retBean : iocrRecognitionBean.getData().getRet()) {
-                            String word_name = retBean.getWord_name();
-                            String word = retBean.getWord();
-                            resultMap.put(word_name, word);
-                            //IOCRWordObject.setIOCRWordObject(word_name, word);
+                        System.out.println("Error_msg = " + iocrRecognitionBean.getError_msg());
+                        System.out.println("Error_code = " + iocrRecognitionBean.getError_code());
+                            for(IOCRRecognitionBean.DataBean.RetBean retBean : iocrRecognitionBean.getData().getRet()) {
+                                String word_name = retBean.getWord_name();
+                                String word = retBean.getWord();
+                                resultMap.put(word_name, word);
+                            }
+                        } catch(Exception e) {
+                            String errorText = "图片识别失败：" + e.getMessage() +
+                                    "(" + "Error_msg=" + iocrRecognitionBean.getError_msg() + ", " +
+                                    "Error_code=" + iocrRecognitionBean.getError_code() + ")";
+                            Toast.makeText(mView.getActivity(), errorText, Toast.LENGTH_LONG).show();
                         }
-                        mView.updateUI(resultMap);
 
+                        mView.updateUI(resultMap);
                     }
 
                     @Override
@@ -76,7 +92,6 @@ public class MainPresenter implements MainContract.Presenter{
                     @Override
                     public void onComplete() {
                         Log.i("onComplete","getRecognitionResultByImage()回调完成");
-                        //System.out.println(IOCRWordObject.toWordString());
                     }
                 });
     }
@@ -91,10 +106,35 @@ public class MainPresenter implements MainContract.Presenter{
 
     }
 
+    /**
+     * 图片Base64编码
+     * @param bitmap
+     * @return
+     */
     private String bitmapToString(Bitmap bitmap){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] bytes = baos.toByteArray();
         return Base64.encodeToString(bytes, Base64.NO_WRAP);
+    }
+
+    /**
+     * 图片压缩算法，解决百度IOCR上传限制4MB的问题
+     * @param bitmap
+     * @return
+     */
+    private Bitmap ImageCompressL(Bitmap bitmap) {
+        double targetwidth = Math.sqrt(IOCRUtils.COMPRESS_RATIO); //压缩大小 4.00 * 1024 * 700
+        if (bitmap.getWidth() > targetwidth || bitmap.getHeight() > targetwidth) {
+            // 创建操作图片用的matrix对象
+            Matrix matrix = new Matrix();
+            // 计算宽高缩放率
+            double x = Math.max(targetwidth / bitmap.getWidth(), targetwidth
+                    / bitmap.getHeight());
+            // 缩放图片动作
+            matrix.postScale((float) x, (float) x);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        }
+        return bitmap;
     }
 }
