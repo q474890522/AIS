@@ -71,7 +71,7 @@ import static com.example.ais.GetDir.getExcelDir;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View{
 
-
+    private GlobalData app;
     private Context mContext;
     private TextView textView;
     private ImageView imageView;
@@ -154,6 +154,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         commit = (LinearLayout)findViewById(R.id.commit);
         commit.setOnClickListener(onClickListener);
 
+        this.app = (GlobalData) this.getApplicationContext();
+        mainPresenter.getAccessToken();
     }
 
 
@@ -217,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         textView3.setText(String.valueOf(map.get("资产标签号")));//需要换模板后更改
         textView.setText("识别结果：" + String.valueOf(map));
     }
+
 
     @Override
     public Context getActivity() {
@@ -283,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             Bitmap photo = BitmapFactory.decodeFile(mTmpFile.getAbsolutePath());
             System.out.println("PhotoByteCount = " + photo.getByteCount());
             try {
-                mainPresenter.getIOCRRecognitionResultByImage(photo);//识别拍照照片
+                mainPresenter.getIOCRRecognitionResultByImage(photo, app.getAccessToken());//识别拍照照片
             } catch (Exception e) {
                 Toast.makeText(MainActivity.this, "图片识别异常:"+e.getMessage(), Toast.LENGTH_LONG).show();
             }

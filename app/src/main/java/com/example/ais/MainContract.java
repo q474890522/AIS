@@ -16,7 +16,7 @@ public interface MainContract {
     interface Presenter{
         void getAccessToken();
         void getRecognitionResultByImage(Bitmap bitmap);
-        void getIOCRRecognitionResultByImage(Bitmap bitmap);
+        void getIOCRRecognitionResultByImage(Bitmap bitmap, String accessToken);
     }
 
 }

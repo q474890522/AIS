@@ -1,7 +1,5 @@
 package com.example.ais;
 
-import android.app.Application;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.util.Base64;
@@ -21,13 +19,15 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class MainPresenter implements MainContract.Presenter{
+public class MainPresenter implements MainContract.Presenter {
     private MainContract.View mView;
     private BaiduOCRService baiduOCRService;
+    private GlobalData app;
 
     public MainPresenter(MainContract.View mView) {
 
         this.mView = mView;
+        this.app = (GlobalData) this.mView.getActivity().getApplicationContext();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://aip.baidubce.com/")
@@ -43,7 +43,7 @@ public class MainPresenter implements MainContract.Presenter{
      * @param bitmap 传入bitmap的图片
      */
     @Override
-    public void getIOCRRecognitionResultByImage(Bitmap bitmap) {
+    public void getIOCRRecognitionResultByImage(Bitmap bitmap, String accessToken) {
         Bitmap bitmapAfterCompress = ImageCompressL(bitmap); //压缩bitmap
         System.out.println(bitmapAfterCompress.getByteCount());
         //System.out.println(bitmap.getByteCount());
@@ -51,7 +51,7 @@ public class MainPresenter implements MainContract.Presenter{
         //String encodeResult = bitmapToString(bitmap);
         String encodeResult = bitmapToString(bitmapAfterCompress); //压缩后base64编码
         //调用retrofit网络接口，注册JavaRX
-        baiduOCRService.getIOCRRecognitionResultByImage(IOCRUtils.ACCESS_TOKEN, encodeResult,IOCRUtils.templateSign)
+        baiduOCRService.getIOCRRecognitionResultByImage(accessToken, encodeResult,IOCRUtils.templateSign)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<IOCRRecognitionBean>() {
@@ -98,7 +98,40 @@ public class MainPresenter implements MainContract.Presenter{
 
     @Override
     public void getAccessToken() {
+        baiduOCRService.getAccessToken(IOCRUtils.GRANT_TYPE, IOCRUtils.CLIENT_ID, IOCRUtils.CLIENT_SECRET)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<AccessTokenBean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
+                    }
+
+                    @Override
+                    public void onNext(AccessTokenBean accessTokenBean) {
+
+                        Log.i("onNext", "getAccessToken()回调成功");
+                        try{
+                            String accessToken = accessTokenBean.getAccess_token();
+                            app.setAccessToken(accessToken);
+                        } catch (Exception e) {
+                            String errorText = "图片识别失败：" + e.getMessage() + "可能AccessToken获取失败";
+                            Toast.makeText(mView.getActivity(), errorText, Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        Log.e("onError", "getAccessToken()回调失败");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("onComplete","getAccessToken()回调完成");
+                    }
+                });
     }
 
     @Override
